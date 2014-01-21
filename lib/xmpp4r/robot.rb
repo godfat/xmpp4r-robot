@@ -23,6 +23,10 @@ class Jabber::Robot
     @client ||= Jabber::Client.new(Jabber::JID::new(username))
   end
 
+  def roster
+    @roster ||= Jabber::Roster::Helper.new(client)
+  end
+
   def start
     connect
     login
@@ -93,10 +97,6 @@ class Jabber::Robot
   ##### private #####
 
   private
-  def roster
-    @roster ||= Jabber::Roster::Helper.new(client)
-  end
-
   def initialize_callbacks
     client.on_exception do |exp|
       errback.call(exp) if errback
