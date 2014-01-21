@@ -23,8 +23,9 @@ class Jabber::Robot
     @client ||= Jabber::Client.new(Jabber::JID::new(username))
   end
 
+  # Roster helper from xmpp4r
   def helper
-    @helper ||= Jabber::Roster::Helper.new(client)
+    Jabber::Roster::Helper.new(client)
   end
 
   def start
