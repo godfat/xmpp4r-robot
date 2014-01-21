@@ -60,7 +60,7 @@ class Jabber::Robot
 
   # e.g. robot.subscribe('someone@example.com')
   def subscribe to
-    helper.accept_subscription(to)
+    client.send(Jabber::Presence.new.set_type(:subscribe).set_to(to))
   end
 
   ##### callbacks #####
