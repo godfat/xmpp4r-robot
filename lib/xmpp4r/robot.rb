@@ -1,4 +1,6 @@
 
+require 'set'
+
 require 'xmpp4r'
 require 'xmpp4r/roster'
 
@@ -10,6 +12,9 @@ class Jabber::Robot
     @username = username
     @password = password
     @errback  = errback
+    @roster   = {:available   => Set.new,
+                 :away        => Set.new,
+                 :unavailable => Set.new}
 
     @retry_time               = Float(opts[:retry_time] || 0)
     @auto_accept_subscription = opts[:auto_accept_subscription]
@@ -57,10 +62,8 @@ class Jabber::Robot
   ##### getters #####
 
   def roster sync=false
-    clear_roster_semaphore if sync
-    helper.get_roster
-    helper.wait_for_roster
-    helper.items.keys.map(&method(:jid_to_username))
+    sync_roster if sync || @roster[:unknown].nil?
+    @roster
   end
 
   ##### actions #####
@@ -85,18 +88,19 @@ class Jabber::Robot
   def notify_presence
     client.add_presence_callback do |presence|
       # :available, :away, :unavailable
-      show = presence.type ||
-               case presence.show # http://xmpp.org/rfcs/rfc3921.html
-               when nil, :chat
-                 :available
-               when :away, :dnd, :xa
-                 :away
-               else
-                 raise "What's this show? #{presence.show}"
-               end
+      status = presence.type ||
+                 case presence.show # http://xmpp.org/rfcs/rfc3921.html
+                 when nil, :chat
+                   :available
+                 when :away, :dnd, :xa
+                   :away
+                 else
+                   raise "What's this show? #{presence.show}"
+                 end
 
       protect_yield do
-        yield(jid_to_username(presence.from), show)
+        yield(jid_to_username(presence.from), status)
+        false
       end
     end
   end
@@ -107,10 +111,8 @@ class Jabber::Robot
       protect_yield do
         if message.body
           yield(jid_to_username(message.from), message.body.strip)
-          true
-        else
-          false
         end
+        false
       end
     end
   end
@@ -133,9 +135,19 @@ class Jabber::Robot
     client.add_presence_callback do |presence|
       if auto_accept_subscription && presence.type == :subscribe
         subscribe(presence.from)
-        true
-      else
-        false
+      end
+      false
+    end
+
+    notify_presence do |jid, status|
+      @roster[:unknown].delete(jid) if @roster[:unknown]
+
+      [:available, :away, :unavailable].each do |type|
+        if type == status
+          @roster[type].add(jid)
+        else
+          @roster[type].delete(jid)
+        end
       end
     end
   end
@@ -148,6 +160,15 @@ class Jabber::Robot
     yield
   rescue => e
     errback.call(e) if errback
+  end
+
+  def sync_roster
+    clear_roster_semaphore
+    helper.get_roster
+    helper.wait_for_roster
+    @roster[:unknown] =
+      Set.new(helper.items.keys.map(&method(:jid_to_username))) -
+      @roster[:available] - @roster[:away] - @roster[:unavailable]
   end
 
   # a hack to let us always get the latest roster
