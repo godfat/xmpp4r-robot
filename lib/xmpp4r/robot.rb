@@ -37,18 +37,22 @@ class Jabber::Robot
     connect
     login
     available
+    self
   end
 
   def stop
     client.close
+    self
   end
 
   def connect
     client.connect
+    self
   end
 
   def login
     client.auth(password)
+    self
   end
 
   ##### actions #####
