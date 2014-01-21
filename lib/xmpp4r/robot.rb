@@ -15,10 +15,6 @@ class Jabber::Robot
     @auto_accept_subscription = opts[:auto_accept_subscription]
   end
 
-  # So that you could reset the client by calling:
-  #     robot.client = nil
-  #     robot.client
-  # This would remove all previously set callbacks.
   def client
     @client ||= Jabber::Client.new(Jabber::JID::new(username))
   end
@@ -110,8 +106,13 @@ class Jabber::Robot
       start
     end
 
-    helper.add_subscription_request_callback do |_, presence|
-      subscribe(presence.from) if auto_accept_subscription
+    client.add_presence_callback do |presence|
+      if auto_accept_subscription && presence.type == :subscribe
+        subscribe(presence.from)
+        true
+      else
+        false
+      end
     end
   end
 
