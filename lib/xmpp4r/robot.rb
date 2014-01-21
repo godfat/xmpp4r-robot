@@ -25,9 +25,13 @@ class Jabber::Robot
   end
 
   def start
+    if @client # restart
+      stop
+      @client = nil
+    end
+    initialize_callbacks
     connect
     login
-    initialize_callbacks
     available
   end
 
