@@ -24,7 +24,7 @@ class Jabber::Robot
   end
 
   def helper
-    @helper ||= Jabber::Roster::Helper.new(client)
+    @helper ||= Jabber::Roster::Helper.new(client, false)
   end
 
   def start
@@ -56,9 +56,11 @@ class Jabber::Robot
 
   ##### getters #####
 
-  def roster
+  def roster sync=false
+    clear_roster_semaphore if sync
+    helper.get_roster
     helper.wait_for_roster
-    helper.items
+    helper.items.keys.map(&method(:jid_to_username))
   end
 
   ##### actions #####
@@ -146,5 +148,11 @@ class Jabber::Robot
     yield
   rescue => e
     errback.call(e) if errback
+  end
+
+  # a hack to let us always get the latest roster
+  def clear_roster_semaphore
+    helper.instance_variable_get(:@roster_wait).
+           instance_variable_set(:@tickets, 0)
   end
 end
