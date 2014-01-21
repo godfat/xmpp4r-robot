@@ -68,13 +68,13 @@ class Jabber::Robot
   end
 
   # e.g. robot.message('someone@example.com', 'Hi!')
-  def message to, body
-    client.send(Jabber::Message::new(to, body).set_type(:chat))
+  def message to_jid, body
+    client.send(Jabber::Message::new(to_jid, body).set_type(:chat))
   end
 
   # e.g. robot.subscribe('someone@example.com')
-  def subscribe to
-    client.send(Jabber::Presence.new.set_type(:subscribe).set_to(to))
+  def subscribe to_jid
+    client.send(Jabber::Presence.new.set_type(:subscribe).set_to(to_jid))
   end
 
   ##### callbacks #####
