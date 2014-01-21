@@ -85,8 +85,12 @@ class Jabber::Robot
   def notify_message
     client.add_message_callback do |message|
       protect_yield do
-        yield(jid_to_username(message.from), message.body.strip) if
-          message.body
+        if message.body
+          yield(jid_to_username(message.from), message.body.strip)
+          true
+        else
+          false
+        end
       end
     end
   end
