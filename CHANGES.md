@@ -3,8 +3,9 @@
 ## xmpp4r-robot 0.2.0 -- ?
 
 * Jabber::Robot#start would now act as restart.
-* Now we consume the message event in notify_message.
-* Added Jabber::Robot#roster which would return the list of roster.
+* Jabber::Robot#roster added which would return a list of roster,
+  with the state of :available, :away, :unavailable, and :unknown.
+* Now we never consume any events.
 
 ## xmpp4r-robot 0.1 -- 2014-01-22
 
