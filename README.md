@@ -58,12 +58,12 @@ robot.stop
 
 ## NOTES:
 
-* If you want to login with a Google Apps GTalk account, for example, suppose
-  your domain is `example.com`, and your account is `robot`, then you need to
-  login as `robot@example.com` and make sure you have proper `SRV` records.
-  Namely `_xmpp-server._tcp.example.com.` and `_xmpp-client._tcp.domain.com.`.
-  Checkout [Olark's SRV instructions][] and
-  Google's manual for [enabling chats outside Google Apps][].
+* If you want to login with a Google Apps Google Talk account, for example,
+  suppose your domain is `example.com`, and your account is `robot`, then
+  you need to login as `robot@example.com` and make sure you have proper
+  `SRV` records. Namely `_xmpp-server._tcp.example.com.` and
+  `_xmpp-client._tcp.example.com.`. Checkout [Olark's SRV instructions][]
+  and Google's manual for [enabling chats outside Google Apps][].
 
 * You might also want to read the [RFC for XMPP][] occasionally. We would try
   hard to use the same terms from XMPP, so that it's less confusing.
