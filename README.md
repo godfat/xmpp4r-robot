@@ -35,9 +35,9 @@ robot = Jabber::Robot.new('someone@gmail.com', 'awesome password',
                           :retry_time => 10,
                           :auto_accept_subscription => true)
 
-robot.notify_presence do |from, reason|
-  # reason could be one of :available, :away, :unavailable
-  puts "#{from} is #{reason}"
+robot.notify_presence do |from, status|
+  # status could be one of :available, :away, :unavailable
+  puts "#{from} is #{status}"
 end
 
 robot.notify_message do |from, body|
@@ -47,7 +47,7 @@ robot.notify_message do |from, body|
   robot.subscribe(from) if body == 'subscribe' # demonstrate how we subscribe
 end
 
-robot.start
+p robot.start.roster
 
 rd, wr = IO.pipe
 Signal.trap('INT'){ wr.puts }

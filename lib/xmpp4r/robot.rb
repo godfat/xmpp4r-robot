@@ -84,10 +84,10 @@ class Jabber::Robot
 
   ##### callbacks #####
 
-  # e.g. robot.notify_presence{ |from, reason| puts "#{from} is #{reason}" }
+  # e.g. robot.notify_presence{ |from, status| puts "#{from} is #{status}" }
+  # The status could be one of :available, :away, :unavailable
   def notify_presence
     client.add_presence_callback do |presence|
-      # :available, :away, :unavailable
       status = presence.type ||
                  case presence.show # http://xmpp.org/rfcs/rfc3921.html
                  when nil, :chat
