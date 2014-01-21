@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.description = "Simple XMPP client built upon xmpp4r. Intended for building simple robots."
   s.email = ["godfat (XD) godfat.org"]
   s.files = [
+  ".gitignore",
   ".gitmodules",
   ".travis.yml",
   "Gemfile",
