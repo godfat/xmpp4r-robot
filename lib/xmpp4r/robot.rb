@@ -15,6 +15,10 @@ class Jabber::Robot
     @auto_accept_subscription = opts[:auto_accept_subscription]
   end
 
+  def inspect
+    "#<#{self.class.name} username=#{username.inspect}>"
+  end
+
   def client
     @client ||= Jabber::Client.new(Jabber::JID::new(username))
   end
