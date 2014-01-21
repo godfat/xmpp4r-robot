@@ -50,7 +50,7 @@ end
 robot.start
 
 rd, wr = IO.pipe
-Signal.trap('INT'){ wr.puts
+Signal.trap('INT'){ wr.puts }
 rd.gets
 
 robot.stop
