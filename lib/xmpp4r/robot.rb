@@ -23,8 +23,8 @@ class Jabber::Robot
     @client ||= Jabber::Client.new(Jabber::JID::new(username))
   end
 
-  def roster
-    @roster ||= Jabber::Roster::Helper.new(client)
+  def helper
+    @helper ||= Jabber::Roster::Helper.new(client)
   end
 
   def start
@@ -59,7 +59,7 @@ class Jabber::Robot
 
   # e.g. robot.subscribe('someone@example.com')
   def subscribe to
-    roster.accept_subscription(to)
+    helper.accept_subscription(to)
   end
 
   ##### callbacks #####
@@ -109,7 +109,7 @@ class Jabber::Robot
       start
     end
 
-    roster.add_subscription_request_callback do |_, presence|
+    helper.add_subscription_request_callback do |_, presence|
       subscribe(presence.from) if auto_accept_subscription
     end
   end
