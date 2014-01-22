@@ -8,13 +8,14 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Lin Jen-Shin (godfat)"]
-  s.date = "2014-01-22"
+  s.date = "2014-01-23"
   s.description = "Simple XMPP client built upon xmpp4r. Intended for building simple robots."
   s.email = ["godfat (XD) godfat.org"]
   s.files = [
   ".gitignore",
   ".gitmodules",
   ".travis.yml",
+  "CHANGES.md",
   "Gemfile",
   "LICENSE",
   "README.md",

@@ -1,6 +1,6 @@
 # CHANGES
 
-## xmpp4r-robot 0.2.0 -- ?
+## xmpp4r-robot 0.2.0 -- 2014-01-23
 
 * Jabber::Robot#start would now act as restart.
 * Jabber::Robot#roster added which would return a list of roster,
