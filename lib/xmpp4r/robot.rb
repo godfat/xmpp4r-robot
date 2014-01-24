@@ -71,7 +71,7 @@ class Jabber::Robot
 
   def roster sync=false
     sync_roster if sync || @roster[:unknown].nil?
-    @roster
+    @roster_mutex.synchronize{ @roster }
   end
 
   ##### actions #####

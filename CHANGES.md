@@ -1,5 +1,9 @@
 # CHANGES
 
+## xmpp4r-robot 0.2.2 -- 2014-01-25
+
+* Should also synchronize @roster.
+
 ## xmpp4r-robot 0.2.1 -- 2014-01-25
 
 * Fixed retry_time bug.
