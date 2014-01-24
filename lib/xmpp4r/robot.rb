@@ -1,5 +1,6 @@
 
 require 'set'
+require 'thread'
 
 require 'xmpp4r'
 require 'xmpp4r/roster'
@@ -18,6 +19,9 @@ class Jabber::Robot
 
     @retry_time               = Float(opts[:retry_time] || 0)
     @auto_accept_subscription = opts[:auto_accept_subscription]
+
+    @roster_mutex = Mutex.new
+    @helper_mutex = Mutex.new
   end
 
   def inspect
@@ -32,6 +36,9 @@ class Jabber::Robot
     @helper ||= Jabber::Roster::Helper.new(client, false)
   end
 
+  # Start the robot. This is not thread safe.
+  #
+  # @api public
   def start
     if @client # restart
       stop
@@ -41,6 +48,7 @@ class Jabber::Robot
     connect
     login
     available
+    roster
     self
   end
 
@@ -124,7 +132,7 @@ class Jabber::Robot
     client.on_exception do |exp|
       errback.call(exp) if errback
 
-      next unless retry_time == 0.0
+      next if retry_time == 0.0
 
       $stderr.puts "ERROR: #{exp}: #{exp.backtrace}" +
                    " We'll sleep for #{retry_time} seconds and retry."
@@ -140,13 +148,15 @@ class Jabber::Robot
     end
 
     notify_presence do |jid, status|
-      @roster[:unknown].delete(jid) if @roster[:unknown]
+      @roster_mutex.synchronize do
+        @roster[:unknown].delete(jid) if @roster[:unknown]
 
-      [:available, :away, :unavailable].each do |type|
-        if type == status
-          @roster[type].add(jid)
-        else
-          @roster[type].delete(jid)
+        [:available, :away, :unavailable].each do |type|
+          if type == status
+            @roster[type].add(jid)
+          else
+            @roster[type].delete(jid)
+          end
         end
       end
     end
@@ -163,12 +173,16 @@ class Jabber::Robot
   end
 
   def sync_roster
-    clear_roster_semaphore
-    helper.get_roster
-    helper.wait_for_roster
-    @roster[:unknown] =
-      Set.new(helper.items.keys.map(&method(:jid_to_username))) -
-      @roster[:available] - @roster[:away] - @roster[:unavailable]
+    @helper_mutex.synchronize do
+      clear_roster_semaphore
+      helper.get_roster
+      helper.wait_for_roster
+    end
+    @roster_mutex.synchronize do
+      @roster[:unknown] =
+        Set.new(helper.items.keys.map(&method(:jid_to_username))) -
+        @roster[:available] - @roster[:away] - @roster[:unavailable]
+    end
   end
 
   # a hack to let us always get the latest roster

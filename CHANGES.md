@@ -1,5 +1,10 @@
 # CHANGES
 
+## xmpp4r-robot 0.2.1 -- 2014-01-25
+
+* Fixed retry_time bug.
+* Made roster thread safe.
+
 ## xmpp4r-robot 0.2.0 -- 2014-01-23
 
 * Jabber::Robot#start would now act as restart.
