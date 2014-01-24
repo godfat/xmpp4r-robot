@@ -22,6 +22,7 @@ class Jabber::Robot
 
     @roster_mutex = Mutex.new
     @helper_mutex = Mutex.new
+    @client = nil # eliminate warning
   end
 
   def inspect
