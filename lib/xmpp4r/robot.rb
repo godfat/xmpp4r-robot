@@ -131,6 +131,7 @@ class Jabber::Robot
   private
   def initialize_callbacks
     client.on_exception do |exp|
+      next unless exp # why exp might be nil?
       errback.call(exp) if errback
 
       next if retry_time == 0.0
