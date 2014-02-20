@@ -138,6 +138,8 @@ class Jabber::Robot
 
       $stderr.puts "ERROR: #{exp}: #{exp.backtrace}" +
                    " We'll sleep for #{retry_time} seconds and retry."
+
+      clear_roster_semaphore
       sleep(retry_time)
       start
     end
