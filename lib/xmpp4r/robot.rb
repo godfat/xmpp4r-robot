@@ -43,7 +43,6 @@ class Jabber::Robot
   #
   # @api public
   def start
-    puts "STARTING"
     @client_mutex.synchronize do
       @sleeping = false
       if @client # restart
