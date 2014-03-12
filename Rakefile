@@ -8,6 +8,6 @@ end
 
 Gemgem.init(dir) do |s|
   s.name    = 'xmpp4r-robot'
-  s.version = '0.2.2'
+  s.version = '0.2.3'
   s.add_runtime_dependency('xmpp4r', '~> 0.5')
 end

@@ -1,5 +1,9 @@
 # CHANGES
 
+## xmpp4r-robot 0.2.3 -- 2014-03-12
+
+* Ignore nil exception. (why?)
+
 ## xmpp4r-robot 0.2.2 -- 2014-01-25
 
 * Should also synchronize @roster.
