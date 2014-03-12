@@ -17,7 +17,7 @@ class Jabber::Robot
                  :away        => Set.new,
                  :unavailable => Set.new}
 
-    @retry_time               = Float(opts[:retry_time] || 0)
+    @retry_time               = 2
     @auto_accept_subscription = opts[:auto_accept_subscription]
 
     @roster_mutex = Mutex.new
@@ -50,6 +50,7 @@ class Jabber::Robot
     login
     available
     roster
+    @retry_time = 2 # reset retry time after successfully connected
     self
   end
 
@@ -134,13 +135,11 @@ class Jabber::Robot
       next unless exp # why exp might be nil?
       errback.call(exp) if errback
 
-      next if retry_time == 0.0
-
       $stderr.puts "ERROR: #{exp}: #{exp.backtrace}" +
                    " We'll sleep for #{retry_time} seconds and retry."
 
       clear_roster_semaphore
-      sleep(retry_time)
+      sleep(retry_time *= 2)
       start
     end
 
