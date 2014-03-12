@@ -17,12 +17,14 @@ class Jabber::Robot
                  :away        => Set.new,
                  :unavailable => Set.new}
 
-    @retry_time               = 2
+    @retry_time               = 1
     @auto_accept_subscription = opts[:auto_accept_subscription]
 
     @roster_mutex = Mutex.new
     @helper_mutex = Mutex.new
-    @client = nil # eliminate warning
+    @client_mutex = Mutex.new
+    @client   = nil # eliminate warning
+    @sleeping = false
   end
 
   def inspect
@@ -41,17 +43,21 @@ class Jabber::Robot
   #
   # @api public
   def start
-    if @client # restart
-      stop
-      @client = nil
+    puts "STARTING"
+    @client_mutex.synchronize do
+      @sleeping = false
+      if @client # restart
+        stop
+        @client = nil
+      end
+      initialize_callbacks
+      connect
+      login
+      available
+      roster
+      @retry_time = 1 # reset retry time after successfully connected
+      self
     end
-    initialize_callbacks
-    connect
-    login
-    available
-    roster
-    @retry_time = 2 # reset retry time after successfully connected
-    self
   end
 
   def stop
@@ -135,12 +141,19 @@ class Jabber::Robot
       next unless exp # why exp might be nil?
       errback.call(exp) if errback
 
-      $stderr.puts "ERROR: #{exp}: #{exp.backtrace}" +
-                   " We'll sleep for #{retry_time} seconds and retry."
+      @client_mutex.synchronize do
+        @sleeping = true
+        @retry_time *= 2
 
-      clear_roster_semaphore
-      sleep(retry_time *= 2)
-      start
+        $stderr.puts "ERROR: #{exp}: #{exp.backtrace}" +
+                     " We'll sleep for #{retry_time} seconds and retry."
+
+        clear_roster_semaphore
+        Thread.new do
+          sleep(retry_time)
+          start
+        end
+      end unless @sleeping
     end
 
     client.add_presence_callback do |presence|
