@@ -20,7 +20,7 @@ This is an attempt to make it easy for such use cases.
 
 ## REQUIREMENTS:
 
-* Tested with MRI (official CRuby) 2.0.0, 2.1.0, Rubinius and JRuby.
+* Tested with MRI (official CRuby), Rubinius and JRuby.
 
 ## INSTALLATION:
 
