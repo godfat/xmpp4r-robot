@@ -1,5 +1,10 @@
 # CHANGES
 
+## xmpp4r-robot 0.3.0 -- 2014-04-08
+
+* Option :retry_time was removed. Instead, now we retry and wait
+  exponentially.
+
 ## xmpp4r-robot 0.2.3 -- 2014-03-12
 
 * Ignore nil exception. (why?)

@@ -32,7 +32,6 @@ This is an attempt to make it easy for such use cases.
 require 'xmpp4r/robot'
 
 robot = Jabber::Robot.new('someone@gmail.com', 'awesome password',
-                          :retry_time => 10,
                           :auto_accept_subscription => true)
 
 robot.notify_presence do |from, status|

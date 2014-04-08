@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
-# stub: xmpp4r-robot 0.2.3 ruby lib
+# stub: xmpp4r-robot 0.3.0 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "xmpp4r-robot"
-  s.version = "0.2.3"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Lin Jen-Shin (godfat)"]
-  s.date = "2014-03-12"
+  s.date = "2014-04-08"
   s.description = "Simple XMPP client built upon xmpp4r. Intended for building simple robots."
   s.email = ["godfat (XD) godfat.org"]
   s.files = [
